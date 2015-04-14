@@ -12,7 +12,14 @@
     <div id="js-carousel" class="carousel" data-options='{
         "dots": true,
         "slidesToScroll": 2,
-        "slidesToShow": 2
+        "slidesToShow": 2,
+        "breakpoints": [{
+            "mediaQueryString": "(max-width: 768px)",
+            "options": {
+                "slidesToShow": 1,
+                "slidesToScroll": 1
+            }
+        }]
     }'>
         <div class="carousel-viewport">
             <ul data-carousel-role="actuator" class="carousel-actuator">
