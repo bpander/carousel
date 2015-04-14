@@ -285,10 +285,10 @@ define(function (require) {
         this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
 
         // Dots
-        var dotCount = this.options.dots === true ? Math.ceil(this.$slide.length / this.options.slidesToScroll) : 0;
+        var dotCount = this._flattenedOptions.dots === true ? Math.ceil(this.$slide.length / this._flattenedOptions.slidesToScroll) : 0;
         var i = -1;
         this.$dotContainer.empty();
-        while (++i !== dotCount) {
+        while (++i < dotCount) {
             this.$dotContainer.append(Carousel.dotTemplate);
         }
     };
@@ -567,7 +567,7 @@ define(function (require) {
 
     Carousel.prototype.handleDotClick = function (e) {
         var dotIndex = $(e.currentTarget).index();
-        var slideIndex = Math.min(dotIndex * this.options.slidesToScroll, this.$slide.length - this.options.slidesToScroll);
+        var slideIndex = Math.min(dotIndex * this._flattenedOptions.slidesToScroll, this.$slide.length - this._flattenedOptions.slidesToScroll);
         this.goTo(slideIndex);
     };
 
