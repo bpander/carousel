@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carousel</title>
+
+    <link rel="stylesheet" href="bower_components/html5-reset/assets/css/reset.css" />
+    <link rel="stylesheet" href="styles/carousel.css" />
+</head>
+<body>
+
+<div style="width: 80%; margin: 0 auto;">
+    <div id="js-carousel" class="carousel">
+        <div class="carousel-viewport">
+            <ul data-carousel-role="actuator" class="carousel-actuator">
+                <li data-carousel-role="slide" style="background-color: #ff0000;">
+                    <img src="//fillmurray.com/300/300" />
+                </li>
+                <li data-carousel-role="slide" style="background-color: #00ff00;">
+                    <img src="//fillmurray.com/300/300" />
+                </li>
+                <li data-carousel-role="slide" style="background-color: #0000ff;">
+                    <img src="//fillmurray.com/300/300" />
+                </li>
+                <li data-carousel-role="slide" style="background-color: #ff0000;">
+                    <img src="//fillmurray.com/300/300" />
+                </li>
+                <li data-carousel-role="slide" style="background-color: #00ff00;">
+                    <img src="//fillmurray.com/300/300" />
+                </li>
+            </ul>
+        </div>
+        <div>
+            <button data-carousel-role="previousButton">Previous</button>
+            <button data-carousel-role="nextButton">Next</button>
+        </div>
+    </div>
+</div>
+
+<script src="bower_components/requirejs/require.js"></script>
+<script>
+require.config({
+
+    baseUrl: 'scripts',
+
+    paths: {
+        'jquery': '../bower_components/jquery/dist/jquery.min',
+        'jsondiffpatch': '../bower_components/jsondiffpatch/public/build/jsondiffpatch',
+        'matchmedia': '../bower_components/matchmedia/matchMedia',
+        'matchmedia.addlistener': '../bower_components/matchmedia/matchMedia.addListener',
+        'velocity': '../bower_components/velocity/velocity'
+    }
+
+});
+</script>
+<script>
+require([
+    'jquery',
+    'Carousel'
+], function (
+    $,
+    Carousel
+) {
+    'use strict';
+
+    window.carousel = new Carousel($('#js-carousel'));
+
+});
+</script>
+</body>
+</html>

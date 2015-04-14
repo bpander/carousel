@@ -1,0 +1,26 @@
+{
+  "name": "carousel.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/bpander/carousel",
+  "authors": [
+    "Bradley Anderson <banderso@nerdery.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "requirejs": "~2.1.17",
+    "html5-reset": "~2.1.2"
+  },
+  "dependencies": {
+    "jquery": "~2.1.3",
+    "jsondiffpatch": "~0.1.31",
+    "matchmedia": "~0.2.0",
+    "velocity": "~1.2.2"
+  }
+}
