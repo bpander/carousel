@@ -54,6 +54,11 @@ define(function (require) {
         this.$actuator = $element.find('[data-carousel-role="actuator"]');
 
         /**
+         * TODO
+         */
+        this.$dotContainer = $element.find('[data-carousel-role="dotContainer"]');
+
+        /**
          * A button that when clicked will decrement the slider by the number defined in the instance's `options.slidesToScroll` property.
          *
          * @property carousel.$previousButton
@@ -120,6 +125,7 @@ define(function (require) {
          */
         this.slideIndex = 0;
 
+        this.handleDotClick = this.handleDotClick.bind(this);
         this.handleMediaQueryChange = this.handleMediaQueryChange.bind(this);
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
@@ -141,6 +147,11 @@ define(function (require) {
          * @default true
          */
         autoplay: true,
+
+        /**
+         * TODO
+         */
+        dots: false,
 
         /**
          * The duration in milliseconds that an autoplaying carousel will wait before advancing
@@ -245,6 +256,11 @@ define(function (require) {
     Carousel.SWIPE_THESHOLD = 10;
 
 
+    Carousel.DOT_CLASS = 'carousel-dot';
+
+    Carousel.dotTemplate = '<button class="' + Carousel.DOT_CLASS + '"></button>'
+
+
     Carousel.prototype.init = function () {
         this.$cloneLeft.insertBefore(this.$slide.first());
         this.$cloneRight.insertAfter(this.$slide.last());
@@ -267,6 +283,14 @@ define(function (require) {
         this.$slide.add(this.$cloneLeft).add(this.$cloneRight).css('width', slideWidth * 100 + '%');
         $.Velocity.hook(this.$actuator, 'translateX', this.getActuatorOffsetAtIndex(this.slideIndex));
         this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
+
+        // Dots
+        var dotCount = this.options.dots === true ? Math.ceil(this.$slide.length / this.options.slidesToScroll) : 0;
+        var i = -1;
+        this.$dotContainer.empty();
+        while (++i !== dotCount) {
+            this.$dotContainer.append(Carousel.dotTemplate);
+        }
     };
 
 
@@ -281,6 +305,7 @@ define(function (require) {
         this.$slide.add(this.$cloneLeft).add(this.$cloneRight).on('touchstart', this.handleTouchStart);
         this.$previousButton.on('click', this.handlePreviousButtonClick);
         this.$nextButton.on('click', this.handleNextButtonClick);
+        this.$dotContainer.on('click', '.' + Carousel.DOT_CLASS, this.handleDotClick);
     };
 
 
@@ -295,6 +320,7 @@ define(function (require) {
         this.$slide.add(this.$cloneLeft).add(this.$cloneRight).off('touchstart', this.handleTouchStart);
         this.$previousButton.off('click', this.handlePreviousButtonClick);
         this.$nextButton.off('click', this.handleNextButtonClick);
+        this.$dotContainer.off('click', '.' + Carousel.DOT_CLASS, this.handleDotClick);
     };
 
 
@@ -463,7 +489,7 @@ define(function (require) {
             }
             this.registerBreakpoints(this._flattenedOptions.breakpoints);
         }
-        if (delta.slidesToShow !== undefined) {
+        if (delta.slidesToShow !== undefined || delta.dots !== undefined) {
             this.layout();
         }
     };
@@ -536,6 +562,13 @@ define(function (require) {
         };
         window.addEventListener('touchmove', handleTouchMove);
         window.addEventListener('touchend', handleTouchEnd);
+    };
+
+
+    Carousel.prototype.handleDotClick = function (e) {
+        var dotIndex = $(e.currentTarget).index();
+        var slideIndex = Math.min(dotIndex * this.options.slidesToScroll, this.$slide.length - this.options.slidesToScroll);
+        this.goTo(slideIndex);
     };
 
 
