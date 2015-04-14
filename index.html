@@ -9,7 +9,11 @@
 <body>
 
 <div style="width: 80%; margin: 0 auto;">
-    <div id="js-carousel" class="carousel">
+    <div id="js-carousel" class="carousel" data-options='{
+        "dots": true,
+        "slidesToScroll": 2,
+        "slidesToShow": 2
+    }'>
         <div class="carousel-viewport">
             <ul data-carousel-role="actuator" class="carousel-actuator">
                 <li data-carousel-role="slide" style="background-color: #ff0000;">
@@ -31,6 +35,7 @@
         </div>
         <div>
             <button data-carousel-role="previousButton">Previous</button>
+            <div data-carousel-role="dotContainer"></div>
             <button data-carousel-role="nextButton">Next</button>
         </div>
     </div>
@@ -62,7 +67,8 @@ require([
 ) {
     'use strict';
 
-    window.carousel = new Carousel($('#js-carousel'));
+    var $carousel = $('#js-carousel');
+    window.carousel = new Carousel($carousel, $carousel.data('options'));
 
 });
 </script>
