@@ -60,6 +60,14 @@ require.config({
         'matchmedia': '../bower_components/matchmedia/matchMedia',
         'matchmedia.addlistener': '../bower_components/matchmedia/matchMedia.addListener',
         'velocity': '../bower_components/velocity/velocity'
+    },
+
+    shim: {
+        velocity: {
+            deps: [
+                'jquery'
+            ]
+        }
     }
 
 });
