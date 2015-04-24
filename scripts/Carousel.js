@@ -474,7 +474,14 @@ define(function (require) {
 
 
     Carousel.prototype.next = function () {
-            return this.advance(this._flattenedOptions.slidesToScroll);
+        var slideIndex = Math.min(
+            this.slideIndex + this._flattenedOptions.slidesToScroll,
+            this.$slide.length - this._flattenedOptions.slidesToShow
+        );
+        if (slideIndex === this.slideIndex) {
+            return this.advance(this._flattenedOptions.slidesToShow);
+        }
+        return this.goTo(slideIndex);
     };
 
 
