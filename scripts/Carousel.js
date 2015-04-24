@@ -117,6 +117,16 @@ define(function (require) {
         this.isAdvancing = false;
 
         /**
+         * TODO
+         */
+        this.navigableIndexes = [];
+
+        /**
+         * TODO
+         */
+        this.navigableIndex = 0;
+
+        /**
          * The instance's current slide index
          *
          * @property carousel.slideIndex
@@ -285,15 +295,12 @@ define(function (require) {
         this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
 
         var i = -1;
-        var dotCount = this._flattenedOptions.dots === true ? Math.ceil((this.$slide.length - this._flattenedOptions.slidesToShow + this._flattenedOptions.slidesToScroll) / this._flattenedOptions.slidesToScroll) : 0;
-
-        // Don't show dots if only one would be present
-        if (dotCount === 1) {
-            dotCount = 0;
-        }
+        var dotCount = this.navigableIndexes.length;
         this.$dotContainer.empty();
-        while (++i < dotCount) {
-            this.$dotContainer.append(Carousel.dotTemplate);
+        if (this._flattenedOptions.dots === true && dotCount > 1) {
+            while (++i < dotCount) {
+                this.$dotContainer.append(Carousel.dotTemplate);
+            }
         }
     };
 
@@ -439,6 +446,7 @@ define(function (require) {
         if (this.slideIndex < 0) {
             this.slideIndex += slideCount;
         }
+        this.updateNavigableIndex();
 
         this.$actuator.velocity('stop');
         return $.when(this.$actuator.velocity(
@@ -469,19 +477,20 @@ define(function (require) {
 
 
     Carousel.prototype.previous = function () {
-        return this.advance(this._flattenedOptions.slidesToScroll * -1);
+        var navigableIndex = this.navigableIndexes[this.navigableIndex - 1];
+        if (navigableIndex === undefined) {
+            navigableIndex = this.navigableIndexes[this.navigableIndexes.length - 1] - this.$slide.length;
+        }
+        return this.goTo(navigableIndex);
     };
 
 
     Carousel.prototype.next = function () {
-        var slideIndex = Math.min(
-            this.slideIndex + this._flattenedOptions.slidesToScroll,
-            this.$slide.length - this._flattenedOptions.slidesToShow
-        );
-        if (slideIndex === this.slideIndex) {
-            return this.advance(this._flattenedOptions.slidesToShow);
+        var navigableIndex = this.navigableIndexes[this.navigableIndex + 1];
+        if (navigableIndex === undefined) {
+            navigableIndex = this.navigableIndexes[0] + this.$slide.length;
         }
-        return this.goTo(slideIndex);
+        return this.goTo(navigableIndex);
     };
 
 
@@ -501,8 +510,35 @@ define(function (require) {
             this.registerBreakpoints(this._flattenedOptions.breakpoints);
         }
         if (delta.slidesToShow !== undefined || delta.dots !== undefined) {
+            this.updateNavigableIndexes();
             this.layout();
         }
+    };
+
+
+    Carousel.prototype.updateNavigableIndex = function () {
+        var i = -1;
+        var navigableIndex;
+        while ((navigableIndex = this.navigableIndexes[++i]) !== undefined) {
+            if (this.slideIndex <= navigableIndex) {
+                this.navigableIndex = navigableIndex;
+                break;
+            }
+        }
+
+        // TODO: Apply classes to active dot
+    };
+
+
+    Carousel.prototype.updateNavigableIndexes = function () {
+        var i;
+        var maxSlideIndex = this.$slide.length - this._flattenedOptions.slidesToShow;
+        this.navigableIndexes = [];
+        for (i = 0; i < maxSlideIndex; i += this._flattenedOptions.slidesToScroll) {
+            this.navigableIndexes.push(i);
+        }
+        var lastNavigableIndex = this.$slide.length - this._flattenedOptions.slidesToShow;
+        this.navigableIndexes.push(lastNavigableIndex);
     };
 
 
@@ -578,8 +614,7 @@ define(function (require) {
 
     Carousel.prototype.handleDotClick = function (e) {
         var dotIndex = $(e.currentTarget).parent().index();
-        var slideIndex = Math.min(dotIndex * this._flattenedOptions.slidesToScroll, this.$slide.length - this._flattenedOptions.slidesToShow);
-        this.goTo(slideIndex);
+        this.goTo(this.navigableIndexes[dotIndex]);
     };
 
 
