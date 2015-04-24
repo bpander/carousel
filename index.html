@@ -47,6 +47,7 @@
 
 <div style="width: 80%; margin: 0 auto;">
     <div id="js-carousel" class="carousel carousel_themed" data-options='{
+        "autoplay": false,
         "dots": true,
         "slidesToScroll": 2,
         "slidesToShow": 2,
@@ -59,28 +60,28 @@
         }]
     }'>
         <div class="carousel-viewport">
-            <ul data-carousel-role="actuator" class="carousel-actuator">
-                <li data-carousel-role="slide" style="background-color: #ff0000;">
-                    <img src="//fillmurray.com/300/300" />
+            <ul data-carousel-role="actuator" class="carousel-actuator" role="listbox" aria-activedescendant="listbox1-1" tabindex="0">
+                <li data-carousel-role="slide" style="background-color: #ff0000;" role="option" id="listbox1-1">
+                    <img src="//fillmurray.com/300/300" alt="one" />
                 </li>
-                <li data-carousel-role="slide" style="background-color: #00ff00;">
-                    <img src="//fillmurray.com/300/300" />
+                <li data-carousel-role="slide" style="background-color: #00ff00;" role="option" id="listbox1-2">
+                    <img src="//fillmurray.com/300/300" alt="two" />
                 </li>
-                <li data-carousel-role="slide" style="background-color: #0000ff;">
-                    <img src="//fillmurray.com/300/300" />
+                <li data-carousel-role="slide" style="background-color: #0000ff;" role="option" id="listbox1-3">
+                    <img src="//fillmurray.com/300/300" alt="three" />
                 </li>
-                <li data-carousel-role="slide" style="background-color: #ff0000;">
-                    <img src="//fillmurray.com/300/300" />
+                <li data-carousel-role="slide" style="background-color: #ff0000;" role="option" id="listbox1-4">
+                    <img src="//fillmurray.com/300/300" alt="four" />
                 </li>
-                <li data-carousel-role="slide" style="background-color: #00ff00;">
-                    <img src="//fillmurray.com/300/300" />
+                <li data-carousel-role="slide" style="background-color: #00ff00;" role="option" id="listbox1-5">
+                    <img src="//fillmurray.com/300/300" alt="five" />
                 </li>
             </ul>
         </div>
         <div>
-            <button data-carousel-role="previousButton">Previous</button>
+            <button data-carousel-role="previousButton">Previous slide</button>
+            <button data-carousel-role="nextButton">Next slide</button>
             <ol data-carousel-role="dotContainer" class="hList"></ol>
-            <button data-carousel-role="nextButton">Next</button>
         </div>
     </div>
 </div>

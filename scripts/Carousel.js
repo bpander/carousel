@@ -278,7 +278,7 @@ define(function (require) {
         this.$cloneRight.insertAfter(this.$slide.last());
 
         // Prevent screen-readers from caring about the clones
-        this.$cloneLeft.add(this.$cloneRight).attr('aria-hidden', true);
+        this.$cloneLeft.add(this.$cloneRight).attr('aria-hidden', true).removeAttr('role id');
 
         this.set(this.options);
         this.enable();
@@ -448,6 +448,7 @@ define(function (require) {
         if (this.slideIndex < 0) {
             this.slideIndex += slideCount;
         }
+        this.$actuator.attr('aria-activedescendant', this.$slide.eq(this.slideIndex).attr('id')).focus();
         this.updateNavigableIndex();
 
         this.$actuator.velocity('stop');
