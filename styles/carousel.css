@@ -3,11 +3,11 @@
 --------------------------------------------------------------------- */
 
 .carousel {
-    overflow: hidden;
 }
 
 .carousel-viewport {
     position: relative;
+    overflow: hidden;
 }
 
 .carousel-viewport:after {
