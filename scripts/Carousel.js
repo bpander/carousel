@@ -570,7 +570,7 @@ define(function (require) {
 
 
     Carousel.prototype.handleDotClick = function (e) {
-        var dotIndex = $(e.currentTarget).index();
+        var dotIndex = $(e.currentTarget).parent().index();
         var slideIndex = Math.min(dotIndex * this._flattenedOptions.slidesToScroll, this.$slide.length - this._flattenedOptions.slidesToShow);
         this.goTo(slideIndex);
     };
