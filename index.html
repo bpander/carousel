@@ -5,11 +5,48 @@
 
     <link rel="stylesheet" href="bower_components/html5-reset/assets/css/reset.css" />
     <link rel="stylesheet" href="styles/carousel.css" />
+    <style>
+/* Carousel re-theme */
+
+.carousel_themed .carousel-dot {
+    background: #dddddd;
+    border: none;
+    border-radius: 50%;
+    margin: 0;
+    padding: 0;
+    width: 8px;
+    height: 8px;
+    transform: scale(1);
+    transition: transform 200ms ease-out, background-color 200ms;
+}
+
+.carousel_themed .carousel-dot_active {
+    background-color: #aaaaaa;
+    transform: scale(1.2);
+}
+
+/* Horizontal list */
+.hList {
+    list-style: none;
+    font-size: 0;
+}
+
+.hList > * {
+    display: inline-block;
+    font-size: 16px;
+}
+
+.hList > * + * {
+    margin-left: 15px;
+}
+
+    </style>
+
 </head>
 <body>
 
 <div style="width: 80%; margin: 0 auto;">
-    <div id="js-carousel" class="carousel" data-options='{
+    <div id="js-carousel" class="carousel carousel_themed" data-options='{
         "dots": true,
         "slidesToScroll": 2,
         "slidesToShow": 2,
@@ -42,7 +79,7 @@
         </div>
         <div>
             <button data-carousel-role="previousButton">Previous</button>
-            <ol data-carousel-role="dotContainer"></ol>
+            <ol data-carousel-role="dotContainer" class="hList"></ol>
             <button data-carousel-role="nextButton">Next</button>
         </div>
     </div>
