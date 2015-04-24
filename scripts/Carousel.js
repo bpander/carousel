@@ -268,6 +268,8 @@ define(function (require) {
 
     Carousel.DOT_CLASS = 'carousel-dot';
 
+    Carousel.DOT_CLASS_ACTIVE = 'carousel-dot_active';
+
     Carousel.dotTemplate = '<li><button class="' + Carousel.DOT_CLASS + '"></button></li>'
 
 
@@ -526,7 +528,7 @@ define(function (require) {
             }
         }
 
-        // TODO: Apply classes to active dot
+        this.$dotContainer.find('.' + Carousel.DOT_CLASS).removeClass(Carousel.DOT_CLASS_ACTIVE).eq(i).addClass(Carousel.DOT_CLASS_ACTIVE);
     };
 
 
