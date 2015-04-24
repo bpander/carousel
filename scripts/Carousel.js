@@ -258,7 +258,7 @@ define(function (require) {
 
     Carousel.DOT_CLASS = 'carousel-dot';
 
-    Carousel.dotTemplate = '<button class="' + Carousel.DOT_CLASS + '"></button>'
+    Carousel.dotTemplate = '<li><button class="' + Carousel.DOT_CLASS + '"></button></li>'
 
 
     Carousel.prototype.init = function () {
@@ -284,9 +284,13 @@ define(function (require) {
         $.Velocity.hook(this.$actuator, 'translateX', this.getActuatorOffsetAtIndex(this.slideIndex));
         this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
 
-        // Dots
-        var dotCount = this._flattenedOptions.dots === true ? Math.ceil(this.$slide.length / this._flattenedOptions.slidesToScroll) : 0;
         var i = -1;
+        var dotCount = this._flattenedOptions.dots === true ? Math.ceil((this.$slide.length - this._flattenedOptions.slidesToShow + this._flattenedOptions.slidesToScroll) / this._flattenedOptions.slidesToScroll) : 0;
+
+        // Don't show dots if only one would be present
+        if (dotCount === 1) {
+            dotCount = 0;
+        }
         this.$dotContainer.empty();
         while (++i < dotCount) {
             this.$dotContainer.append(Carousel.dotTemplate);
@@ -470,7 +474,7 @@ define(function (require) {
 
 
     Carousel.prototype.next = function () {
-        return this.advance(this._flattenedOptions.slidesToScroll);
+            return this.advance(this._flattenedOptions.slidesToScroll);
     };
 
 
