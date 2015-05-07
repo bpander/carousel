@@ -524,7 +524,7 @@ define(function (require) {
         var navigableIndex;
         while ((navigableIndex = this.navigableIndexes[++i]) !== undefined) {
             if (this.slideIndex <= navigableIndex) {
-                this.navigableIndex = navigableIndex;
+                this.navigableIndex = i;
                 break;
             }
         }
