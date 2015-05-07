@@ -619,6 +619,9 @@ define(function (require) {
         var touch = e.originalEvent.touches[0];
         var x = touch.clientX;
         var delta;
+        var slideWidth = this.$slide.width();
+        var rangeMax = x + (this.slideIndex * slideWidth);
+        var rangeMin = rangeMax - (this.$slide.length - this._flattenedOptions.slidesToShow) * slideWidth;
 
         var translateX = parseInt(this.$actuator.css('left'), 10);
         this.$actuator.css('left', 0);
@@ -626,10 +629,22 @@ define(function (require) {
         $.Velocity.hook(this.$actuator, 'translateZ', 0); // Enable hardware acceleration while dragging
 
         var handleTouchMove = function (e) {
+            var d;
             var xCurrent = e.touches[0].clientX;
             e.preventDefault();
             delta = xCurrent - x;
-            translateX = translateX + delta;
+            if (self._flattenedOptions.infinite === false) {
+                if (xCurrent < rangeMin) {
+                    console.log('min', xCurrent, rangeMin, rangeMax);
+                } else if (xCurrent > rangeMax) {
+                    d = xCurrent - rangeMax;
+                    // translateX = -1545 + slideWidth * there;
+                } else {
+                    translateX = translateX + delta;
+                }
+            } else {
+                translateX = translateX + delta;
+            }
             $.Velocity.hook(self.$actuator, 'translateX', translateX + 'px');
             x = xCurrent;
         };
