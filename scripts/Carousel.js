@@ -170,6 +170,11 @@ define(function (require) {
         dots: false,
 
         /**
+         * TODO
+         */
+        infinite: true,
+
+        /**
          * The duration in milliseconds that an autoplaying carousel will wait before advancing
          *
          * @property carousel.options.pauseDuration
@@ -448,17 +453,24 @@ define(function (require) {
         var self = this;
         var slideCount = this.$slide.length;
         var targetIndex = this.slideIndex + howMany;
-        var isLoopingAround = targetIndex < 0 || targetIndex >= slideCount;
         var handleTransitionEnd = function () {
             $.Velocity.hook(self.$actuator, 'translateX', '0px');
             self.$actuator.css('left', self.getActuatorOffsetAtIndex(self.slideIndex));
             self.isAdvancing = false;
         };
-        this.isAdvancing = true;
-        this.slideIndex = targetIndex % slideCount;
-        if (this.slideIndex < 0) {
-            this.slideIndex += slideCount;
+        if (this._flattenedOptions.infinite) {
+            this.slideIndex = targetIndex % slideCount;
+            if (this.slideIndex < 0) {
+                this.slideIndex += slideCount;
+            }
+        } else {
+            targetIndex = Math.min(Math.max(targetIndex, 0), slideCount - 1);
+            if (targetIndex === this.slideIndex) {
+                return $.Deferred().reject();
+            }
+            this.slideIndex = targetIndex;
         }
+        this.isAdvancing = true;
 
         // Update markup states
         // TODO: 'active' seems pretty magic-string-y. Make it configurable? Put it in a static var?
