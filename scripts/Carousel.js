@@ -512,9 +512,10 @@ define(function (require) {
             }
             this.registerBreakpoints(this._flattenedOptions.breakpoints);
         }
-        if (delta.slidesToShow !== undefined || delta.dots !== undefined) {
+        if (delta.slidesToShow !== undefined || delta.dots !== undefined || delta.slidesToScroll !== undefined) {
             this.updateNavigableIndexes();
             this.layout();
+            this.updateNavigableIndex();
         }
     };
 
