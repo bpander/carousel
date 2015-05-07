@@ -293,7 +293,7 @@ define(function (require) {
     Carousel.prototype.layout = function () {
         var slideWidth = 1 / this._flattenedOptions.slidesToShow;
         this.$slide.add(this.$cloneLeft).add(this.$cloneRight).css('width', slideWidth * 100 + '%');
-        $.Velocity.hook(this.$actuator, 'translateX', this.getActuatorOffsetAtIndex(this.slideIndex));
+        this.$actuator.css('left', this.getActuatorOffsetAtIndex(this.slideIndex));
         this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
 
         var i = -1;
@@ -438,9 +438,8 @@ define(function (require) {
         var targetIndex = this.slideIndex + howMany;
         var isLoopingAround = targetIndex < 0 || targetIndex >= slideCount;
         var handleTransitionEnd = function () {
-            if (isLoopingAround) {
-                $.Velocity.hook(self.$actuator, 'translateX', self.getActuatorOffsetAtIndex(self.slideIndex));
-            }
+            $.Velocity.hook(self.$actuator, 'translateX', '0px');
+            self.$actuator.css('left', self.getActuatorOffsetAtIndex(self.slideIndex));
             self.isAdvancing = false;
         };
         this.isAdvancing = true;
@@ -452,6 +451,8 @@ define(function (require) {
         this.updateNavigableIndex();
 
         this.$actuator.velocity('stop');
+        $.Velocity.hook(this.$actuator, 'translateX', this.$actuator.css('left'));
+        this.$actuator.css('left', 0);
         return $.when(this.$actuator.velocity(
             { translateX: this.getActuatorOffsetAtIndex(targetIndex) },
             {
@@ -585,9 +586,9 @@ define(function (require) {
         var x = touch.clientX;
         var delta;
 
-        // Before we do anything else, we have to convert the translateX value to pixels to make the dragging math easier
-        var translateX = parseInt($.Velocity.hook(this.$actuator, 'translateX'), 10) / 100 * this.$actuator.parent().width();
-        $.Velocity.hook(this.$actuator, 'translateX', translateX);
+        var translateX = parseInt(this.$actuator.css('left'), 10);
+        this.$actuator.css('left', 0);
+        $.Velocity.hook(this.$actuator, 'translateX', translateX + 'px');
         $.Velocity.hook(this.$actuator, 'translateZ', 0); // Enable hardware acceleration while dragging
 
         var handleTouchMove = function (e) {
@@ -606,6 +607,8 @@ define(function (require) {
             if (Math.abs(delta) >= Carousel.SWIPE_THESHOLD) {
                 slideIndex = slideIndex - Math.min(Math.max(delta, -1), 1);
             }
+            $.Velocity.hook(self.$actuator, 'translateX', '0px');
+            self.$actuator.css('left', translateX + 'px');
             self.goTo(slideIndex);
             if (self._flattenedOptions.autoplay) {
                 self.autoplay();
