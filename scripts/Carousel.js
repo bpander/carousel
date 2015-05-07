@@ -59,6 +59,11 @@ define(function (require) {
         this.$dotContainer = $element.find('[data-carousel-role="dotContainer"]');
 
         /**
+         * TODO
+         */
+        this.$navigator = $element.find('[data-carousel-role="navigator"]');
+
+        /**
          * A button that when clicked will decrement the slider by the number defined in the instance's `options.slidesToScroll` property.
          *
          * @property carousel.$previousButton
@@ -139,6 +144,7 @@ define(function (require) {
         this.handleMediaQueryChange = this.handleMediaQueryChange.bind(this);
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
+        this.handleNavigatorClick = this.handleNavigatorClick.bind(this);
         this.handlePreviousButtonClick = this.handlePreviousButtonClick.bind(this);
         this.handleNextButtonClick = this.handleNextButtonClick.bind(this);
         this.handleTouchStart = this.handleTouchStart.bind(this);
@@ -276,6 +282,8 @@ define(function (require) {
     Carousel.prototype.init = function () {
         this.$cloneLeft.insertBefore(this.$slide.first());
         this.$cloneRight.insertAfter(this.$slide.last());
+        this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
+        this.$navigator.removeClass('active').eq(this.slideIndex).addClass('active');
 
         // Prevent screen-readers from caring about the clones
         this.$cloneLeft.add(this.$cloneRight).attr('aria-hidden', true).removeAttr('role id');
@@ -294,7 +302,6 @@ define(function (require) {
         var slideWidth = 1 / this._flattenedOptions.slidesToShow;
         this.$slide.add(this.$cloneLeft).add(this.$cloneRight).css('width', slideWidth * 100 + '%');
         this.$actuator.css('left', this.getActuatorOffsetAtIndex(this.slideIndex));
-        this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
 
         var i = -1;
         var dotCount = this.navigableIndexes.length;
@@ -318,6 +325,7 @@ define(function (require) {
         this.$slide.add(this.$cloneLeft).add(this.$cloneRight).on('touchstart', this.handleTouchStart);
         this.$previousButton.on('click', this.handlePreviousButtonClick);
         this.$nextButton.on('click', this.handleNextButtonClick);
+        this.$navigator.on('click', this.handleNavigatorClick);
         this.$dotContainer.on('click', '.' + Carousel.DOT_CLASS, this.handleDotClick);
     };
 
@@ -333,6 +341,7 @@ define(function (require) {
         this.$slide.add(this.$cloneLeft).add(this.$cloneRight).off('touchstart', this.handleTouchStart);
         this.$previousButton.off('click', this.handlePreviousButtonClick);
         this.$nextButton.off('click', this.handleNextButtonClick);
+        this.$navigator.off('click', this.handleNavigatorClick);
         this.$dotContainer.off('click', '.' + Carousel.DOT_CLASS, this.handleDotClick);
     };
 
@@ -450,9 +459,15 @@ define(function (require) {
         if (this.slideIndex < 0) {
             this.slideIndex += slideCount;
         }
+
+        // Update markup states
+        // TODO: 'active' seems pretty magic-string-y. Make it configurable? Put it in a static var?
         this.$actuator.attr('aria-activedescendant', this.$slide.eq(this.slideIndex).attr('id'));
+        this.$slide.removeClass('active').eq(this.slideIndex).addClass('active');
+        this.$navigator.removeClass('active').eq(this.slideIndex).addClass('active');
         this.updateNavigableIndex();
 
+        // Do the animation
         this.$actuator.velocity('stop');
         $.Velocity.hook(this.$actuator, 'translateX', this.$actuator.css('left'));
         this.$actuator.css('left', 0);
@@ -626,6 +641,11 @@ define(function (require) {
     Carousel.prototype.handleDotClick = function (e) {
         var dotIndex = $(e.currentTarget).parent().index();
         this.goTo(this.navigableIndexes[dotIndex]);
+    };
+
+
+    Carousel.prototype.handleNavigatorClick = function (e) {
+        this.goTo(this.$navigator.index(e.currentTarget));
     };
 
 
