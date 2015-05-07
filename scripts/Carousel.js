@@ -548,6 +548,9 @@ define(function (require) {
             this.layout();
             this.updateNavigableIndex();
         }
+        if (delta.infinite !== undefined) {
+            this.$cloneLeft.add(this.$cloneRight).css('visibility', (delta.infinite[0] === true) ? '' : 'hidden');
+        }
     };
 
 
