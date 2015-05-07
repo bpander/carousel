@@ -524,6 +524,7 @@ define(function (require) {
     Carousel.prototype.updateNavigableIndex = function () {
         var i = -1;
         var navigableIndex;
+        this.navigableIndex = this.navigableIndexes.length - 1;
         while ((navigableIndex = this.navigableIndexes[++i]) !== undefined) {
             if (this.slideIndex <= navigableIndex) {
                 this.navigableIndex = i;
@@ -531,7 +532,7 @@ define(function (require) {
             }
         }
 
-        this.$dotContainer.find('.' + Carousel.DOT_CLASS).removeClass(Carousel.DOT_CLASS_ACTIVE).eq(i).addClass(Carousel.DOT_CLASS_ACTIVE);
+        this.$dotContainer.find('.' + Carousel.DOT_CLASS).removeClass(Carousel.DOT_CLASS_ACTIVE).eq(this.navigableIndex).addClass(Carousel.DOT_CLASS_ACTIVE);
     };
 
 
