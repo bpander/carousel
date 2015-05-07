@@ -428,11 +428,14 @@ define(function (require) {
     };
 
 
-    Carousel.prototype.advance = function (howMany) {
+    Carousel.prototype.advance = function (howMany, transitionDuration) {
         if (this.isAdvancing) {
             return $.Deferred().reject();
         }
-        howMany = (howMany !== undefined) ? howMany : 1;
+        // Use defaults if numbers weren't passed in (these are short-hand if/elses)
+        typeof howMany !== 'number' && (howMany = 1);
+        typeof transitionDuration !== 'number' && (transitionDuration = this._flattenedOptions.transitionDuration);
+
         var self = this;
         var slideCount = this.$slide.length;
         var targetIndex = this.slideIndex + howMany;
@@ -456,16 +459,16 @@ define(function (require) {
         return $.when(this.$actuator.velocity(
             { translateX: this.getActuatorOffsetAtIndex(targetIndex) },
             {
-                duration: this._flattenedOptions.transitionDuration,
+                duration: transitionDuration,
                 easing: this._flattenedOptions.easing
             }
         )).then(handleTransitionEnd);
     };
 
 
-    Carousel.prototype.goTo = function (slideIndex) {
+    Carousel.prototype.goTo = function (slideIndex, transitionDuration) {
         var howMany = slideIndex - this.slideIndex;
-        return this.advance(howMany);
+        return this.advance(howMany, transitionDuration);
     };
 
 
