@@ -448,7 +448,7 @@ define(function (require) {
         if (this.slideIndex < 0) {
             this.slideIndex += slideCount;
         }
-        this.$actuator.attr('aria-activedescendant', this.$slide.eq(this.slideIndex).attr('id')).focus();
+        this.$actuator.attr('aria-activedescendant', this.$slide.eq(this.slideIndex).attr('id'));
         this.updateNavigableIndex();
 
         this.$actuator.velocity('stop');
