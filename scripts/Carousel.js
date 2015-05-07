@@ -464,7 +464,7 @@ define(function (require) {
                 this.slideIndex += slideCount;
             }
         } else {
-            targetIndex = Math.min(Math.max(targetIndex, 0), slideCount - 1);
+            targetIndex = Math.min(Math.max(targetIndex, 0), this.navigableIndexes[this.navigableIndexes.length - 1]);
             if (targetIndex === this.slideIndex) {
                 return $.Deferred().reject();
             }
