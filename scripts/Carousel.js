@@ -172,7 +172,7 @@ define(function (require) {
         /**
          * TODO
          */
-        infinite: true,
+        infinite: false,
 
         /**
          * The duration in milliseconds that an autoplaying carousel will wait before advancing
@@ -282,6 +282,11 @@ define(function (require) {
     Carousel.DOT_CLASS_ACTIVE = 'carousel-dot_active';
 
     Carousel.dotTemplate = '<li><button class="' + Carousel.DOT_CLASS + '"></button></li>'
+
+
+    Carousel.elasticModifier = function (x) {
+        return (200 * x) / Math.sqrt(100000 + x * x);
+    };
 
 
     Carousel.prototype.init = function () {
@@ -620,8 +625,12 @@ define(function (require) {
         var x = touch.clientX;
         var delta;
         var slideWidth = this.$slide.width();
+        var slideWidthTotal = slideWidth * this.$slide.length;
+        var rangeOfMotion = (this.$slide.length - this._flattenedOptions.slidesToShow) * slideWidth;
         var rangeMax = x + (this.slideIndex * slideWidth);
-        var rangeMin = rangeMax - (this.$slide.length - this._flattenedOptions.slidesToShow) * slideWidth;
+        var rangeMin = rangeMax - rangeOfMotion;
+        var actuatorBoundsLeft = slideWidthTotal * -1;
+        var actuatorBoundsRight = actuatorBoundsLeft - rangeOfMotion;
 
         var translateX = parseInt(this.$actuator.css('left'), 10);
         this.$actuator.css('left', 0);
@@ -629,21 +638,19 @@ define(function (require) {
         $.Velocity.hook(this.$actuator, 'translateZ', 0); // Enable hardware acceleration while dragging
 
         var handleTouchMove = function (e) {
-            var d;
+            var pullDistance;
             var xCurrent = e.touches[0].clientX;
             e.preventDefault();
             delta = xCurrent - x;
+            translateX = translateX + delta;
             if (self._flattenedOptions.infinite === false) {
                 if (xCurrent < rangeMin) {
-                    console.log('min', xCurrent, rangeMin, rangeMax);
+                    pullDistance = rangeMin - xCurrent;
+                    translateX = actuatorBoundsRight - Carousel.elasticModifier(pullDistance);
                 } else if (xCurrent > rangeMax) {
-                    d = xCurrent - rangeMax;
-                    // translateX = -1545 + slideWidth * there;
-                } else {
-                    translateX = translateX + delta;
+                    pullDistance = xCurrent - rangeMax;
+                    translateX = actuatorBoundsLeft + Carousel.elasticModifier(pullDistance);
                 }
-            } else {
-                translateX = translateX + delta;
             }
             $.Velocity.hook(self.$actuator, 'translateX', translateX + 'px');
             x = xCurrent;
@@ -658,6 +665,7 @@ define(function (require) {
             }
             $.Velocity.hook(self.$actuator, 'translateX', '0px');
             self.$actuator.css('left', translateX + 'px');
+            self.slideIndex = -1; // Force .goTo to animate even if we're not changing slide indexes
             self.goTo(slideIndex);
             if (self._flattenedOptions.autoplay) {
                 self.autoplay();
