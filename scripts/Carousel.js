@@ -571,6 +571,15 @@ define(function (require) {
         }
 
         this.$dotContainer.find('.' + Carousel.DOT_CLASS).removeClass(Carousel.DOT_CLASS_ACTIVE).eq(this.navigableIndex).addClass(Carousel.DOT_CLASS_ACTIVE);
+        this.$previousButton.add(this.$nextButton).prop('disabled', false);
+        if (this._flattenedOptions.infinite === false) {
+            if (this.slideIndex === 0) {
+                this.$previousButton.prop('disabled', true);
+            }
+            if (this.slideIndex === this.navigableIndexes[this.navigableIndexes.length - 1]) {
+                this.$nextButton.prop('disabled', true);
+            }
+        }
     };
 
 
